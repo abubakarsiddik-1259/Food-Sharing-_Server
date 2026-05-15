@@ -37,6 +37,12 @@ async function run() {
       res.send(result);
     });
 
+    //.....avalavel foods.......
+    app.get("/foods", async (req, res) => {
+      const result = await foodsCollection.find().toArray();
+      res.send(result);
+    });
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!",
