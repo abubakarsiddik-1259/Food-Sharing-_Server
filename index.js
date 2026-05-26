@@ -7,7 +7,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASS}@cluster0.rfyh9vd.mongodb.net/?appName=Cluster0`;
 
 const client = new MongoClient(uri, {
@@ -33,6 +33,8 @@ async function run() {
         .find()
         .sort({ food_quantity: -1 })
         .limit(6);
+      console.log("doooommmm", cursor);
+
       const result = await cursor.toArray();
       res.send(result);
     });
@@ -50,6 +52,18 @@ async function run() {
       const result = await foodsCollection.insertOne(food);
 
       res.send(result);
+    });
+
+
+    /////  details
+    app.get("/foods/:id", async (req, res) => {
+      const { id } = req.params;
+      const objectId = new ObjectId(id);
+      const result = await foodsCollection.findOne({ _id: objectId });
+      res.send({
+        success: true,
+        result,
+      });
     });
 
     await client.db("admin").command({ ping: 1 });
