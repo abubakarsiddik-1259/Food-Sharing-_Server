@@ -65,10 +65,11 @@ async function run() {
       });
     });
 
-
     app.get("/my-foods", async (req, res) => {
       const email = req.query.email;
-      const result = await foodsCollection.find({donator_email: email,}).toArray();
+      const result = await foodsCollection
+        .find({ donator_email: email })
+        .toArray();
       res.send(result);
     });
 
@@ -98,7 +99,12 @@ async function run() {
       });
     });
 
-    
+    app.post("/food-request", async (req, res) => {
+      const newBit = req.body;
+      const result = await foodRequestCollection.insertOne(newBit);
+      res.send(result);
+    });
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!",
